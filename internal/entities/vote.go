@@ -12,12 +12,12 @@ type Vote struct {
 }
 
 type CreateVoteRequest struct {
-	UserId   int `json:"user_id"`
-	PollId   int `json:"poll_id"`
+	UserId   int `json:"-"`
+	PollId   int `json:"-"`
 	OptionId int `json:"option_id"`
 }
 
 type UpdateVoteRequest struct {
 	OptionId int `json:"option_id"`
-	UserId   int `json:"user_id"`
+	UserId   int `json:"-"`
 }
