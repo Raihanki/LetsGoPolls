@@ -13,10 +13,10 @@ func GenerateToken(userId int) (string, error) {
 		Issuer:    os.Getenv("APP_NAME"),
 		Subject:   strconv.Itoa(userId),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 48)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 	})
 
-	token, err := tokenByte.SignedString(os.Getenv("JWT_SECRET"))
+	token, err := tokenByte.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
 		return "", err
 	}

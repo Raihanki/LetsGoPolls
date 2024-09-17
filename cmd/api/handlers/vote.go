@@ -14,7 +14,8 @@ import (
 )
 
 type VoteHandler struct {
-	VoteRepository repositories.VoteRepository
+	VoteRepository   repositories.VoteRepository
+	OptionRepository repositories.OptionRepository
 }
 
 func (repo *VoteHandler) Store(w http.ResponseWriter, r *http.Request, userId int) {
@@ -30,6 +31,29 @@ func (repo *VoteHandler) Store(w http.ResponseWriter, r *http.Request, userId in
 	defer r.Body.Close()
 	if err != nil {
 		helpers.JsonResponse(w, 400, "invalid request body", nil)
+		return
+	}
+
+	checkOption, err := repo.OptionRepository.GetOptionById(request.OptionId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			helpers.JsonResponse(w, 404, "option not found", nil)
+			return
+		}
+		log.Printf("error while getting poll: %v", err)
+		helpers.JsonResponse(w, 500, "", nil)
+		return
+	}
+
+	//check if user already voted
+	_, err = repo.VoteRepository.GetVoteByUserIdAndPollId(userId, pollId)
+	if err == nil {
+		helpers.JsonResponse(w, 400, "user already voted", nil)
+		return
+	}
+
+	if checkOption.PollId != pollId {
+		helpers.JsonResponse(w, 400, "option not found in this poll", nil)
 		return
 	}
 
@@ -72,7 +96,18 @@ func (repo *VoteHandler) Update(w http.ResponseWriter, r *http.Request, userId i
 		return
 	}
 
-	option, err := repo.VoteRepository.GetVoteByUserIdAndPollId(userId, pollId)
+	checkOption, err := repo.OptionRepository.GetOptionById(request.OptionId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			helpers.JsonResponse(w, 404, "option not found", nil)
+			return
+		}
+		log.Printf("error while getting poll: %v", err)
+		helpers.JsonResponse(w, 500, "", nil)
+		return
+	}
+
+	vote, err := repo.VoteRepository.GetVoteByUserIdAndPollId(userId, pollId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			helpers.JsonResponse(w, 404, "vote not found", nil)
@@ -83,10 +118,46 @@ func (repo *VoteHandler) Update(w http.ResponseWriter, r *http.Request, userId i
 		return
 	}
 
+	if request.OptionId == vote.OptionId {
+		helpers.JsonResponse(w, 400, "same option", nil)
+		return
+	}
+
+	if checkOption.PollId != pollId {
+		helpers.JsonResponse(w, 400, "option not found in this poll", nil)
+		return
+	}
+
 	request.UserId = userId
-	vote, err := repo.VoteRepository.UpdateVote(request, voteId, option.Id)
+	updatedVote, err := repo.VoteRepository.UpdateVote(request, voteId, vote.OptionId)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			helpers.JsonResponse(w, 404, "vote not found", nil)
+			return
+		}
 		log.Printf("error while updating vote: %v", err)
+		helpers.JsonResponse(w, 500, "", nil)
+		return
+	}
+
+	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), updatedVote)
+}
+
+func (repo *VoteHandler) Show(w http.ResponseWriter, r *http.Request, userId int) {
+	paramPoll := r.PathValue("pollId")
+	pollId, err := strconv.Atoi(paramPoll)
+	if err != nil {
+		helpers.JsonResponse(w, 400, "invalid poll id", nil)
+		return
+	}
+
+	vote, err := repo.VoteRepository.GetVoteByUserIdAndPollId(userId, pollId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			helpers.JsonResponse(w, 404, "vote not found", nil)
+			return
+		}
+		log.Printf("error while getting vote: %v", err)
 		helpers.JsonResponse(w, 500, "", nil)
 		return
 	}

@@ -192,6 +192,11 @@ func (repo *OptionHandler) DeleteOption(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
+	if option.PollId != poll.Id {
+		helpers.JsonResponse(w, 403, "forbidden", nil)
+		return
+	}
+
 	err = repo.OptionRepository.DeleteOption(optionId)
 	if err != nil {
 		log.Printf("error while deleting option: %v", err)
@@ -199,5 +204,5 @@ func (repo *OptionHandler) DeleteOption(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), option)
+	helpers.JsonResponse(w, 204, http.StatusText(http.StatusNoContent), nil)
 }

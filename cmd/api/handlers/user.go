@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/Raihanki/LetsGoPolls/internal/database/repositories"
 	"github.com/Raihanki/LetsGoPolls/internal/entities"
@@ -26,7 +27,7 @@ func (repo *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Fatalf("error while hashing password: %v", err)
+		log.Printf("error while hashing password: %v", err)
 		helpers.JsonResponse(w, 500, "", nil)
 		return
 	}
@@ -34,12 +35,22 @@ func (repo *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	request.Password = string(hashedPassword)
 	user, err := repo.UserRepository.CreateUser(request)
 	if err != nil {
-		log.Fatalf("error while creating user: %v", err)
+		log.Printf("error while creating user: %v", err)
 		helpers.JsonResponse(w, 500, "", nil)
 		return
 	}
 
-	helpers.JsonResponse(w, 201, http.StatusText(http.StatusCreated), user)
+	type response struct {
+		Id    int    `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+	}
+	responseUser := response{
+		Id:    user.Id,
+		Name:  user.Name,
+		Email: user.Email,
+	}
+	helpers.JsonResponse(w, 201, http.StatusText(http.StatusCreated), responseUser)
 }
 
 func (repo *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -64,5 +75,20 @@ func (repo *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), user)
+	type response struct {
+		Token     string `json:"token"`
+		ExpiresIn string `json:"expires_in"`
+	}
+	token, err := helpers.GenerateToken(user.Id)
+	if err != nil {
+		log.Printf("error while generating token: %v", err)
+		helpers.JsonResponse(w, 500, "", nil)
+		return
+	}
+
+	responseUser := response{
+		Token:     token,
+		ExpiresIn: time.Now().Add(time.Hour * 24).Format("2006-01-02 15:04:05"),
+	}
+	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), responseUser)
 }

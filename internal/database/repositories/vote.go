@@ -36,7 +36,7 @@ func (repo *VoteRepository) CreateVote(request entities.CreateVoteRequest) (enti
 	query := "INSERT INTO votes (user_id, poll_id, option_id) VALUES ($1, $2, $3) RETURNING *"
 	vote := entities.Vote{}
 	row := tx.QueryRow(query, request.UserId, request.PollId, request.OptionId)
-	err = row.Scan(&vote.Id, &vote.UserId, &vote.PollId, &vote.OptionId, &vote.CreatedAt)
+	err = row.Scan(&vote.Id, &vote.UserId, &vote.PollId, &vote.OptionId, &vote.CreatedAt, &vote.UpdatedAt)
 	if err != nil {
 		return vote, err
 	}
@@ -63,8 +63,8 @@ func (repo *VoteRepository) UpdateVote(request entities.UpdateVoteRequest, voteI
 	defer tx.Rollback()
 
 	// lock options
-	queryLockOptions := "SELECT id FROM options WHERE id = $1 FOR UPDATE"
-	_, err = tx.Exec(queryLockOptions, request.OptionId)
+	queryLockOptions := "SELECT id FROM options WHERE id = $1 AND poll_id = (SELECT poll_id FROM votes WHERE id = $2) FOR UPDATE"
+	_, err = tx.Exec(queryLockOptions, request.OptionId, voteId)
 	if err != nil {
 		return entities.Vote{}, err
 	}
@@ -72,7 +72,7 @@ func (repo *VoteRepository) UpdateVote(request entities.UpdateVoteRequest, voteI
 	query := "UPDATE votes SET option_id = $1 WHERE id = $2 AND user_id = $3 RETURNING *"
 	vote := entities.Vote{}
 	row := tx.QueryRow(query, request.OptionId, voteId, request.UserId)
-	err = row.Scan(&vote.Id, &vote.UserId, &vote.PollId, &vote.OptionId, &vote.CreatedAt)
+	err = row.Scan(&vote.Id, &vote.UserId, &vote.PollId, &vote.OptionId, &vote.CreatedAt, &vote.UpdatedAt)
 	if err != nil {
 		return vote, err
 	}

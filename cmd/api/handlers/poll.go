@@ -82,6 +82,7 @@ func (repo *PollHandler) UpdatePoll(w http.ResponseWriter, r *http.Request, user
 		}
 		log.Printf("error while updating poll: %v", err)
 		helpers.JsonResponse(w, 500, "", nil)
+		return
 	}
 
 	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), poll)
@@ -95,12 +96,19 @@ func (repo *PollHandler) DeletePoll(w http.ResponseWriter, r *http.Request, user
 		return
 	}
 
-	err = repo.PollRepository.DeletePoll(pollId, userId)
+	_, err = repo.PollRepository.GetPollById(pollId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			helpers.JsonResponse(w, 404, "poll not found", nil)
 			return
 		}
+		log.Printf("error while getting poll: %v", err)
+		helpers.JsonResponse(w, 500, "", nil)
+		return
+	}
+
+	err = repo.PollRepository.DeletePoll(pollId, userId)
+	if err != nil {
 		log.Printf("error while deleting poll: %v", err)
 		helpers.JsonResponse(w, 500, "", nil)
 		return

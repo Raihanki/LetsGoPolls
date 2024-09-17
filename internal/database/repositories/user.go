@@ -12,14 +12,9 @@ type UserRepository struct {
 
 func (repo *UserRepository) CreateUser(request entities.CreateUserRequest) (entities.User, error) {
 	query := "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *"
-	row, err := repo.DB.Query(query, request.Name, request.Email, request.Password)
-	if err != nil {
-		return entities.User{}, err
-	}
-	defer row.Close()
-
+	row := repo.DB.QueryRow(query, request.Name, request.Email, request.Password)
 	user := entities.User{}
-	err = row.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	err := row.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return user, err
 	}

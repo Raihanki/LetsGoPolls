@@ -11,9 +11,9 @@ type PollRepository struct {
 }
 
 func (repo *PollRepository) CreatePoll(request entities.CreatePollRequest, userId int) (entities.Poll, error) {
-	query := "INSERT INTO polls (user_id, title, description, end_date, is_active) VALUES ($1, $2, $3) RETURNING *"
+	query := "INSERT INTO polls (user_id, title, description, end_date, is_active) VALUES ($1, $2, $3, $4, $5) RETURNING *"
 	poll := entities.Poll{}
-	row := repo.DB.QueryRow(query, userId, request.Title, request.Description, request.EndDate, request.IsActive)
+	row := repo.DB.QueryRow(query, userId, request.Title, request.Description, request.EndDate.Time, request.IsActive)
 	err := row.Scan(&poll.Id, &poll.UserId, &poll.Title, &poll.Description, &poll.EndDate, &poll.IsActive, &poll.WinnerOptionId, &poll.CreatedAt, &poll.UpdatedAt)
 	if err != nil {
 		return poll, err
@@ -57,9 +57,9 @@ func (repo *PollRepository) GetPollsByUserId(userId int) ([]entities.Poll, error
 }
 
 func (repo *PollRepository) UpdatePoll(request entities.UpdatePollRequest, pollId int, userId int) (entities.Poll, error) {
-	query := "UPDATE polls SET title = $1, description = $2, end_date = $3, is_active = $4 WHERE id = $5 AND userId = $6 RETURNING *"
+	query := "UPDATE polls SET title = $1, description = $2, end_date = $3, is_active = $4 WHERE id = $5 AND user_id = $6 RETURNING *"
 	poll := entities.Poll{}
-	row := repo.DB.QueryRow(query, request.Title, request.Description, request.EndDate, request.IsActive, pollId, userId)
+	row := repo.DB.QueryRow(query, request.Title, request.Description, request.EndDate.Time, request.IsActive, pollId, userId)
 	err := row.Scan(&poll.Id, &poll.UserId, &poll.Title, &poll.Description, &poll.EndDate, &poll.IsActive, &poll.WinnerOptionId, &poll.CreatedAt, &poll.UpdatedAt)
 	if err != nil {
 		return poll, err
