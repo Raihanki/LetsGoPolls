@@ -44,6 +44,7 @@ func (cfg *ApplicationConfig) Routes() http.Handler {
 	voteHandler := handlers.VoteHandler{
 		VoteRepository:   repositories.VoteRepository{DB: cfg.DB},
 		OptionRepository: repositories.OptionRepository{DB: cfg.DB},
+		PollRepository:   repositories.PollRepository{DB: cfg.DB},
 	}
 	mux.HandleFunc("POST /api/v1/polls/{pollId}/votes", middlewares.AuthenticateUsingToken(voteHandler.Store))
 	mux.HandleFunc("PUT /api/v1/polls/{pollId}/votes/{voteId}", middlewares.AuthenticateUsingToken(voteHandler.Update))

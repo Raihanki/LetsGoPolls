@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/Raihanki/LetsGoPolls/internal/database/repositories"
 	"github.com/Raihanki/LetsGoPolls/internal/entities"
@@ -16,6 +17,7 @@ import (
 type VoteHandler struct {
 	VoteRepository   repositories.VoteRepository
 	OptionRepository repositories.OptionRepository
+	PollRepository   repositories.PollRepository
 }
 
 func (repo *VoteHandler) Store(w http.ResponseWriter, r *http.Request, userId int) {
@@ -31,6 +33,22 @@ func (repo *VoteHandler) Store(w http.ResponseWriter, r *http.Request, userId in
 	defer r.Body.Close()
 	if err != nil {
 		helpers.JsonResponse(w, 400, "invalid request body", nil)
+		return
+	}
+
+	checkPoll, err := repo.PollRepository.GetPollById(pollId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			helpers.JsonResponse(w, 404, "poll not found", nil)
+			return
+		}
+		log.Printf("error while getting poll: %v", err)
+		helpers.JsonResponse(w, 500, "", nil)
+		return
+	}
+
+	if time.Now().After(checkPoll.EndDate) {
+		helpers.JsonResponse(w, 400, "poll has ended", nil)
 		return
 	}
 
@@ -93,6 +111,22 @@ func (repo *VoteHandler) Update(w http.ResponseWriter, r *http.Request, userId i
 	defer r.Body.Close()
 	if err != nil {
 		helpers.JsonResponse(w, 400, "invalid request body", nil)
+		return
+	}
+
+	checkPoll, err := repo.PollRepository.GetPollById(pollId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			helpers.JsonResponse(w, 404, "poll not found", nil)
+			return
+		}
+		log.Printf("error while getting poll: %v", err)
+		helpers.JsonResponse(w, 500, "", nil)
+		return
+	}
+
+	if time.Now().After(checkPoll.EndDate) {
+		helpers.JsonResponse(w, 400, "poll has ended", nil)
 		return
 	}
 

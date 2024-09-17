@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/Raihanki/LetsGoPolls/internal/database/repositories"
 	"github.com/Raihanki/LetsGoPolls/internal/entities"
@@ -23,6 +24,11 @@ func (repo *PollHandler) CreatePoll(w http.ResponseWriter, r *http.Request, user
 	defer r.Body.Close()
 	if err != nil {
 		helpers.JsonResponse(w, 400, "invalid request body", nil)
+		return
+	}
+
+	if request.EndDate.Before(time.Now()) {
+		helpers.JsonResponse(w, 400, "end date must be after start date", nil)
 		return
 	}
 
