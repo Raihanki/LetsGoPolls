@@ -17,7 +17,7 @@ type PollHandler struct {
 	PollRepository repositories.PollRepository
 }
 
-func (repo *PollHandler) CreatePoll(w http.ResponseWriter, r *http.Request) {
+func (repo *PollHandler) CreatePoll(w http.ResponseWriter, r *http.Request, userId int) {
 	request := entities.CreatePollRequest{}
 	err := json.NewDecoder(r.Body).Decode(&request)
 	defer r.Body.Close()
@@ -26,8 +26,7 @@ func (repo *PollHandler) CreatePoll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: get User ID from token
-	poll, err := repo.PollRepository.CreatePoll(request, 1) // 1 is a dummy user ID (default for now)
+	poll, err := repo.PollRepository.CreatePoll(request, userId)
 	if err != nil {
 		log.Printf("error while creating poll: %v", err)
 		helpers.JsonResponse(w, 500, "", nil)
@@ -59,7 +58,7 @@ func (repo *PollHandler) GetPollById(w http.ResponseWriter, r *http.Request) {
 	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), poll)
 }
 
-func (repo *PollHandler) UpdatePoll(w http.ResponseWriter, r *http.Request) {
+func (repo *PollHandler) UpdatePoll(w http.ResponseWriter, r *http.Request, userId int) {
 	pathV := r.PathValue("pollId")
 	pollId, err := strconv.Atoi(pathV)
 	if err != nil {
@@ -75,7 +74,7 @@ func (repo *PollHandler) UpdatePoll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	poll, err := repo.PollRepository.UpdatePoll(request, pollId)
+	poll, err := repo.PollRepository.UpdatePoll(request, pollId, userId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			helpers.JsonResponse(w, 404, "poll not found", nil)
@@ -88,7 +87,7 @@ func (repo *PollHandler) UpdatePoll(w http.ResponseWriter, r *http.Request) {
 	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), poll)
 }
 
-func (repo *PollHandler) DeletePoll(w http.ResponseWriter, r *http.Request) {
+func (repo *PollHandler) DeletePoll(w http.ResponseWriter, r *http.Request, userId int) {
 	pathV := r.PathValue("pollId")
 	pollId, err := strconv.Atoi(pathV)
 	if err != nil {
@@ -96,7 +95,7 @@ func (repo *PollHandler) DeletePoll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = repo.PollRepository.DeletePoll(pollId)
+	err = repo.PollRepository.DeletePoll(pollId, userId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			helpers.JsonResponse(w, 404, "poll not found", nil)

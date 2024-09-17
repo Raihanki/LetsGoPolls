@@ -56,10 +56,10 @@ func (repo *PollRepository) GetPollsByUserId(userId int) ([]entities.Poll, error
 	return polls, nil
 }
 
-func (repo *PollRepository) UpdatePoll(request entities.UpdatePollRequest, pollId int) (entities.Poll, error) {
-	query := "UPDATE polls SET title = $1, description = $2, end_date = $3, is_active = $4 WHERE id = $5 RETURNING *"
+func (repo *PollRepository) UpdatePoll(request entities.UpdatePollRequest, pollId int, userId int) (entities.Poll, error) {
+	query := "UPDATE polls SET title = $1, description = $2, end_date = $3, is_active = $4 WHERE id = $5 AND userId = $6 RETURNING *"
 	poll := entities.Poll{}
-	row := repo.DB.QueryRow(query, request.Title, request.Description, request.EndDate, request.IsActive, pollId)
+	row := repo.DB.QueryRow(query, request.Title, request.Description, request.EndDate, request.IsActive, pollId, userId)
 	err := row.Scan(&poll.Id, &poll.UserId, &poll.Title, &poll.Description, &poll.EndDate, &poll.IsActive, &poll.WinnerOptionId, &poll.CreatedAt, &poll.UpdatedAt)
 	if err != nil {
 		return poll, err
@@ -68,9 +68,9 @@ func (repo *PollRepository) UpdatePoll(request entities.UpdatePollRequest, pollI
 	return poll, nil
 }
 
-func (repo *PollRepository) DeletePoll(pollId int) error {
-	query := "DELETE FROM polls WHERE id = $1"
-	_, err := repo.DB.Exec(query, pollId)
+func (repo *PollRepository) DeletePoll(pollId int, userId int) error {
+	query := "DELETE FROM polls WHERE id = $1 AND user_id = $2"
+	_, err := repo.DB.Exec(query, pollId, userId)
 	if err != nil {
 		return err
 	}

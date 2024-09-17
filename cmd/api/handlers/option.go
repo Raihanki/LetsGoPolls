@@ -36,7 +36,7 @@ func (repo *OptionHandler) GetAllOptions(w http.ResponseWriter, r *http.Request)
 	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), options)
 }
 
-func (repo *OptionHandler) CreateOption(w http.ResponseWriter, r *http.Request) {
+func (repo *OptionHandler) CreateOption(w http.ResponseWriter, r *http.Request, userId int) {
 	pathPoll := r.PathValue("pollId")
 	pollId, err := strconv.Atoi(pathPoll)
 	if err != nil {
@@ -62,7 +62,12 @@ func (repo *OptionHandler) CreateOption(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	option, err := repo.OptionRepository.CreateOption(request, poll.Id) // 1 is a dummy poll ID (default for now)
+	if poll.UserId != userId {
+		helpers.JsonResponse(w, 403, "forbidden", nil)
+		return
+	}
+
+	option, err := repo.OptionRepository.CreateOption(request, poll.Id)
 	if err != nil {
 		log.Printf("error while creating option: %v", err)
 		helpers.JsonResponse(w, 500, "", nil)
@@ -94,7 +99,7 @@ func (repo *OptionHandler) GetOptionById(w http.ResponseWriter, r *http.Request)
 	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), option)
 }
 
-func (repo *OptionHandler) UpdateOption(w http.ResponseWriter, r *http.Request) {
+func (repo *OptionHandler) UpdateOption(w http.ResponseWriter, r *http.Request, userId int) {
 	pathOpt := r.PathValue("optionId")
 	optionId, err := strconv.Atoi(pathOpt)
 	if err != nil {
@@ -117,13 +122,18 @@ func (repo *OptionHandler) UpdateOption(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	_, err = repo.PollRepository.GetPollById(pollId)
+	poll, err := repo.PollRepository.GetPollById(pollId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			helpers.JsonResponse(w, 404, "poll not found", nil)
 			return
 		}
 		helpers.JsonResponse(w, 500, "", nil)
+		return
+	}
+
+	if poll.UserId != userId {
+		helpers.JsonResponse(w, 403, "forbidden", nil)
 		return
 	}
 
@@ -141,7 +151,7 @@ func (repo *OptionHandler) UpdateOption(w http.ResponseWriter, r *http.Request) 
 	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), option)
 }
 
-func (repo *OptionHandler) DeleteOption(w http.ResponseWriter, r *http.Request) {
+func (repo *OptionHandler) DeleteOption(w http.ResponseWriter, r *http.Request, userId int) {
 	pathPoll := r.PathValue("pollId")
 	pollId, err := strconv.Atoi(pathPoll)
 	if err != nil {
@@ -156,13 +166,18 @@ func (repo *OptionHandler) DeleteOption(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	_, err = repo.PollRepository.GetPollById(pollId)
+	poll, err := repo.PollRepository.GetPollById(pollId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			helpers.JsonResponse(w, 404, "poll not found", nil)
 			return
 		}
 		helpers.JsonResponse(w, 500, "", nil)
+		return
+	}
+
+	if poll.UserId != userId {
+		helpers.JsonResponse(w, 403, "forbidden", nil)
 		return
 	}
 

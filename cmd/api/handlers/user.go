@@ -8,6 +8,7 @@ import (
 	"github.com/Raihanki/LetsGoPolls/internal/database/repositories"
 	"github.com/Raihanki/LetsGoPolls/internal/entities"
 	"github.com/Raihanki/LetsGoPolls/internal/helpers"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserHandler struct {
@@ -23,8 +24,14 @@ func (repo *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: hash password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatalf("error while hashing password: %v", err)
+		helpers.JsonResponse(w, 500, "", nil)
+		return
+	}
 
+	request.Password = string(hashedPassword)
 	user, err := repo.UserRepository.CreateUser(request)
 	if err != nil {
 		log.Fatalf("error while creating user: %v", err)
@@ -51,7 +58,11 @@ func (repo *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: compare password & Generate token
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password))
+	if err != nil {
+		helpers.JsonResponse(w, 400, "invalid email or password", nil)
+		return
+	}
 
 	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), user)
 }
