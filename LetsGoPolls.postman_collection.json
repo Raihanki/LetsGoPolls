@@ -1,0 +1,617 @@
+{
+	"info": {
+		"_postman_id": "99912d31-189d-40a2-a477-f048632b2026",
+		"name": "LetsGoPolls",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7777643",
+		"_collection_link": "https://orange-capsule-522175.postman.co/workspace/New-Team-Workspace~6650e4c8-856d-407d-a908-4b663e57613a/collection/7777643-99912d31-189d-40a2-a477-f048632b2026?action=share&source=collection_link&creator=7777643"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"shiina\",\n    \"email\": \"shiina@gmail.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}users/register",
+							"host": [
+								"{{local}}users"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"shiina@gmail.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}users/login",
+							"host": [
+								"{{local}}users"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Poll",
+			"item": [
+				{
+					"name": "Create Poll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Hateed Programing Language\",\n    \"description\": \"choose your most hated programing languange!!\",\n    \"end_date\": \"2024-09-20 13:23:00\",\n    \"is_active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}polls",
+							"host": [
+								"{{local}}polls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Poll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Most Hated Programing Language\",\n    \"description\": \"choose your most hated programing languange!!\",\n    \"end_date\": \"2024-10-10 14:24:20\",\n    \"is_active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}polls/3",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Poll By ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Favorite Programing Language\",\n    \"description\": \"choose your favorite programing languange!!\",\n    \"end_date\": \"2024-09-20 13:23:00\",\n    \"is_active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}polls/:pollId",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								":pollId"
+							],
+							"variable": [
+								{
+									"key": "pollId",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Poll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Favorite Programing Language\",\n    \"description\": \"choose your favorite programing languange!!\",\n    \"end_date\": \"2024-09-20 13:23:00\",\n    \"is_active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}polls/:pollId",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								":pollId"
+							],
+							"variable": [
+								{
+									"key": "pollId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Option",
+			"item": [
+				{
+					"name": "Create Option",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"body\": \"Javascript\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}polls/:pollId/options",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								":pollId",
+								"options"
+							],
+							"variable": [
+								{
+									"key": "pollId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Option",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"body\": \"PHP\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}polls/:pollId/options/4",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								":pollId",
+								"options",
+								"4"
+							],
+							"variable": [
+								{
+									"key": "pollId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Option",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}polls/:pollId/options",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								":pollId",
+								"options"
+							],
+							"variable": [
+								{
+									"key": "pollId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Option By ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{local}}polls/:pollId/options/:optionId",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								":pollId",
+								"options",
+								":optionId"
+							],
+							"variable": [
+								{
+									"key": "pollId",
+									"value": "4"
+								},
+								{
+									"key": "optionId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Option",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{local}}polls/:pollId/options/:optionId",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								":pollId",
+								"options",
+								":optionId"
+							],
+							"variable": [
+								{
+									"key": "pollId",
+									"value": "4"
+								},
+								{
+									"key": "optionId",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vote",
+			"item": [
+				{
+					"name": "Create Vote",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"option_id\": 7\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}polls/4/votes",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								"4",
+								"votes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Vote",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"option_id\": 8\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}polls/:pollId/votes/:voteId",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								":pollId",
+								"votes",
+								":voteId"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "pollId",
+									"value": "4"
+								},
+								{
+									"key": "voteId",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Vote",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZXRzR29Qb2xscyIsInN1YiI6IjMiLCJleHAiOjE3MjY3MjY2MDAsImlhdCI6MTcyNjU1MzgwMH0.wFX6R9lHc-Vqk7dOMLDN-_uAoduxWlQtFNZVSN84RWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"option_id\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}polls/4/votes",
+							"host": [
+								"{{local}}polls"
+							],
+							"path": [
+								"4",
+								"votes"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "local",
+			"value": "localhost:8000/api/v1/",
+			"type": "string"
+		}
+	]
+}
