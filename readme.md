@@ -41,10 +41,10 @@ The API will be available at http://localhost:8080 (adjust the port if necessary
 
 ## Documentation
 You can import the provided Postman collection for API testing and exploration:
-    1. Open Postman.
-    2. Go to File > Import.
-    3. Choose the LetsGoPolls.postman_collection.json file located in the root of the project.
-    4. Import the collection to start testing the API endpoints.
+- Open Postman.
+- Go to File > Import.
+- Choose the LetsGoPolls.postman_collection.json file located in the root of the project.
+- Import the collection to start testing the API endpoints.
 
 ## WebSocket
 To connect to the WebSocket handler, use the following URL:
