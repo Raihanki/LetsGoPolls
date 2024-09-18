@@ -39,7 +39,7 @@ Start the server
 ```
 The API will be available at http://localhost:8080 (adjust the port if necessary).
 
-## Documentation
+## API Documentation
 You can import the provided Postman collection for API testing and exploration:
 - Open Postman.
 - Go to File > Import.
