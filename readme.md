@@ -26,6 +26,7 @@ LetsGoPolls is a Go and PostgreSQL-based API for managing polls with real-time u
    cp .env-example .env
 ```
 Edit the .env file to configure your database and other environment-specific settings.
+
 3. **Build the Application**
 To build the application, run:
 ```bash
