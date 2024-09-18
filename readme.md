@@ -18,7 +18,7 @@ LetsGoPolls is a Go and PostgreSQL-based API for managing polls with real-time u
 
 1. **Clone the Repository**
 ```bash
-   git clone https://github.com/yourusername/lets-go-polls.git
+   git clone https://github.com/Raihanki/LetsGoPolls.git
    cd lets-go-polls
 ```
 2. **Setup Environtment Variable**
