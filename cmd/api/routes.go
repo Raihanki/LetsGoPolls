@@ -50,5 +50,8 @@ func (cfg *ApplicationConfig) Routes() http.Handler {
 	mux.HandleFunc("PUT /api/v1/polls/{pollId}/votes/{voteId}", middlewares.AuthenticateUsingToken(voteHandler.Update))
 	mux.HandleFunc("GET /api/v1/polls/{pollId}/votes", middlewares.AuthenticateUsingToken(voteHandler.Show))
 
+	//websocket routes
+	mux.HandleFunc("/ws", handlers.WebsocketHandler)
+
 	return mux
 }

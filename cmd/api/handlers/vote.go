@@ -88,6 +88,9 @@ func (repo *VoteHandler) Store(w http.ResponseWriter, r *http.Request, userId in
 		return
 	}
 
+	// broadcast option count
+	broadcastUpdatedOption(pollId, repo.OptionRepository)
+
 	helpers.JsonResponse(w, 201, http.StatusText(http.StatusOK), vote)
 }
 
@@ -174,6 +177,9 @@ func (repo *VoteHandler) Update(w http.ResponseWriter, r *http.Request, userId i
 		return
 	}
 
+	// broadcast option count
+	broadcastUpdatedOption(pollId, repo.OptionRepository)
+
 	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), updatedVote)
 }
 
@@ -197,4 +203,19 @@ func (repo *VoteHandler) Show(w http.ResponseWriter, r *http.Request, userId int
 	}
 
 	helpers.JsonResponse(w, 200, http.StatusText(http.StatusOK), vote)
+}
+
+func broadcastUpdatedOption(pollId int, optionRepository repositories.OptionRepository) {
+	options, err := optionRepository.GetAllOptions(pollId)
+	if err != nil {
+		log.Printf("error while getting options: %v", err)
+		return
+	}
+	jsonData, err := json.Marshal(options)
+	if err != nil {
+		log.Printf("error while marshalling options: %v", err)
+		return
+	}
+
+	BroadcastMessage(jsonData)
 }
