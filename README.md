@@ -2,6 +2,9 @@
 
 LetsGoPolls is a Go and PostgreSQL-based API for managing polls with real-time updates using WebSockets. The application allows users to create and participate in polls, view live vote counts, and manage active polls with end times. It supports real-time updates to reflect votes as they are cast, providing a dynamic and interactive user experience.
 
+## Why LetsGoPolls?
+LetsGoPolls provides a powerful solution for managing polls with real-time updates using WebSockets. It allows users to instantly see voting results as they happen, making it perfect for live events or interactive decision-making processes. Built with Go and PostgreSQL, it ensures high performance and reliability, making it a great choice for anyone looking to add dynamic polling functionality to their platform.
+
 ## Features
 
 - **Poll Creation**: Users can create new polls with a title, description, and end date.
