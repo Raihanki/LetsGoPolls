@@ -16,6 +16,7 @@ LetsGoPolls provides a powerful solution for managing polls with real-time updat
 
 - Go 1.22
 - PostgreSQL
+- pressly/goose (a database migration tools)
 
 ## Getting Started
 
@@ -29,6 +30,12 @@ LetsGoPolls provides a powerful solution for managing polls with real-time updat
    cp .env-example .env
 ```
 Edit the .env file to configure your database and other environment-specific settings.
+
+```bash
+   goose -dir=migrations/ postgres "postgres://postgres:@localhost:5432/letsgopolls" up
+```
+Above is command to run migrations if you use postgres driver and letsgopolls database name, you can change the format if you have different url or database driver the format is 
+goose -dir=mirgrations/ DRIVER DBSTRING up
 
 3. **Build the Application**
 To build the application, run:
